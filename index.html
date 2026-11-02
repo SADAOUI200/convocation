@@ -259,7 +259,7 @@
         </table>
 
         <div id="downloadWrapper" style="display: none;">
-          <a href="#" id="downloadBtn" class="btn-download" target="_blank">
+          <a href="#" id="downloadBtn" class="btn-download" target="_blank" rel="noopener noreferrer">
             📥 تحميل الاستدعاء بصيغة PDF
           </a>
         </div>
@@ -269,9 +269,9 @@
 
   <script>
     // ==============================================================
-    // ضع رابط تطبيق الويب (Web App URL) المستخرج بعد النشر هنا:
+    // ضع رابط تطبيق الويب (Web App URL) الخاص بك هنا:
     // ==============================================================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylzk6jNoCIeVZ3SIYT34CRsRnuKbx6i_sMcRYSVL9qPs9e8766SAwVH_LuhUGX87om/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6b-sKrXW9STmg5OzKu77kQnynTbTByFCHMfPYhMXIw56jBhQCn6Bqwy9IgWK_iOjs/exec";
 
     function handleEnter(e) {
       if (e.key === 'Enter') executeSearch();
@@ -321,12 +321,12 @@
           }
 
           const dlWrapper = document.getElementById('downloadWrapper');
-          if (res.hasFile) {
+          if (res.hasFile && res.downloadUrl) {
             document.getElementById('downloadBtn').href = res.downloadUrl;
             dlWrapper.style.display = 'block';
           } else {
             dlWrapper.style.display = 'none';
-            displayAlert(res.message, "warn");
+            if (res.message) displayAlert(res.message, "warn");
           }
 
           resultCard.style.display = 'block';
