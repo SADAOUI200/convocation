@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة سحب استدعاءات التكوين</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #2563eb;
+      --accent: #059669;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      direction: rtl;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 25px auto;
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      text-align: center;
+      padding: 28px 20px;
+    }
+
+    .header h2 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+    }
+
+    .header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 28px;
+    }
+
+    .search-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 15px;
+      color: #334155;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--secondary);
+    }
+
+    .btn-search {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-search:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-search:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .loader {
+      display: none;
+      text-align: center;
+      margin: 15px 0;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    #alertBox {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .alert-error {
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .alert-warn {
+      background-color: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    #resultCard {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 22px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table td.field-title {
+      width: 40%;
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .data-table td.field-val {
+      color: #0f172a;
+      font-weight: 500;
+    }
+
+    .btn-download {
+      display: block;
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      box-sizing: border-box;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-download:hover {
+      background: #047857;
+    }
+
+    .btn-download:active {
+      transform: scale(0.99);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h2>فضاء سحب استدعاءات التكوين</h2>
+      <p>أدخل الرقم الوظيفي للتحقق من المعطيات وتحميل استدعاء التكوين</p>
+    </div>
+
+    <div class="content">
+      <div class="search-box">
+        <label for="empId">الرقم الوظيفي:</label>
+        <div class="input-group">
+          <input type="text" id="empId" placeholder="مثال: 102456" autocomplete="off" onkeypress="handleEnter(event)">
+          <button class="btn-search" id="searchBtn" onclick="executeSearch()">تحقق وبحث</button>
+        </div>
+      </div>
+
+      <div id="loader" class="loader">جاري جلب البيانات والتحقق من الاستدعاء...</div>
+      <div id="alertBox"></div>
+
+      <div id="resultCard">
+        <table class="data-table">
+          <tr>
+            <td class="field-title">الاسم واللقب</td>
+            <td class="field-val" id="outFullName"></td>
+          </tr>
+          <tr>
+            <td class="field-title">تاريخ الميلاد</td>
+            <td class="field-val" id="outBirthDate"></td>
+          </tr>
+          <tr>
+            <td class="field-title">الرتبة الحالية</td>
+            <td class="field-val" id="outCurrentRank"></td>
+          </tr>
+          <tr>
+            <td class="field-title">رتبة التكوين (المعني بالترقية إليها)</td>
+            <td class="field-val" id="outTargetRank"></td>
+          </tr>
+          <tr>
+            <td class="field-title">مؤسسة / مركز التكوين</td>
+            <td class="field-val" id="outCenter"></td>
+          </tr>
+          <tr>
+            <td class="field-title">تاريخ انطلاق التكوين</td>
+            <td class="field-val" id="outStartDate"></td>
+          </tr>
+          <tr id="notesRow" style="display: none;">
+            <td class="field-title">ملاحظات</td>
+            <td class="field-val" id="outNotes"></td>
+          </tr>
+        </table>
+
+        <div id="downloadWrapper" style="display: none;">
+          <a href="#" id="downloadBtn" class="btn-download" target="_blank">
+            📥 تحميل الاستدعاء بصيغة PDF
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==============================================================
+    // ضع رابط تطبيق الويب (Web App URL) المستخرج بعد النشر هنا:
+    // ==============================================================
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1NxVe7Jd5o5ji651uybktgBbQpZ4Lx0NheNtEEzMMsJRVMmdboZOPGWyX1PkZzHnW/exec";
+
+    function handleEnter(e) {
+      if (e.key === 'Enter') executeSearch();
+    }
+
+    function executeSearch() {
+      const idVal = document.getElementById('empId').value.trim();
+      const alertBox = document.getElementById('alertBox');
+      const resultCard = document.getElementById('resultCard');
+      const loader = document.getElementById('loader');
+      const searchBtn = document.getElementById('searchBtn');
+
+      alertBox.style.display = 'none';
+      resultCard.style.display = 'none';
+
+      if (!idVal) {
+        displayAlert("يرجى إدخال الرقم الوظيفي أولاً.", "error");
+        return;
+      }
+
+      loader.style.display = 'block';
+      searchBtn.disabled = true;
+
+      fetch(`${SCRIPT_URL}?empId=${encodeURIComponent(idVal)}`)
+        .then(response => response.json())
+        .then(res => {
+          loader.style.display = 'none';
+          searchBtn.disabled = false;
+
+          if (!res.success) {
+            displayAlert(res.message, "error");
+            return;
+          }
+
+          document.getElementById('outFullName').textContent = res.data.fullName || "—";
+          document.getElementById('outBirthDate').textContent = res.data.birthDate || "—";
+          document.getElementById('outCurrentRank').textContent = res.data.currentRank || "—";
+          document.getElementById('outTargetRank').textContent = res.data.targetRank || "—";
+          document.getElementById('outCenter').textContent = res.data.trainingCenter || "—";
+          document.getElementById('outStartDate').textContent = res.data.startDate || "—";
+
+          if (res.data.notes) {
+            document.getElementById('outNotes').textContent = res.data.notes;
+            document.getElementById('notesRow').style.display = 'table-row';
+          } else {
+            document.getElementById('notesRow').style.display = 'none';
+          }
+
+          const dlWrapper = document.getElementById('downloadWrapper');
+          if (res.hasFile) {
+            document.getElementById('downloadBtn').href = res.downloadUrl;
+            dlWrapper.style.display = 'block';
+          } else {
+            dlWrapper.style.display = 'none';
+            displayAlert(res.message, "warn");
+          }
+
+          resultCard.style.display = 'block';
+        })
+        .catch(err => {
+          loader.style.display = 'none';
+          searchBtn.disabled = false;
+          displayAlert("تعذر الاتصال بقاعدة البيانات. يرجى التحقق من الرابط وإعدادات النشر.", "error");
+        });
+    }
+
+    function displayAlert(text, type) {
+      const box = document.getElementById('alertBox');
+      box.className = type === 'error' ? 'alert-error' : 'alert-warn';
+      box.textContent = text;
+      box.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
