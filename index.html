@@ -44,7 +44,6 @@
     .header h2 {
       margin: 0 0 8px 0;
       font-size: 22px;
-      letter-spacing: -0.5px;
     }
 
     .header p {
@@ -82,7 +81,6 @@
       border-radius: 8px;
       font-size: 16px;
       outline: none;
-      transition: border-color 0.2s;
     }
 
     input[type="text"]:focus {
@@ -98,8 +96,6 @@
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s;
-      white-space: nowrap;
     }
 
     .btn-search:hover {
@@ -142,12 +138,6 @@
 
     #resultCard {
       display: none;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .data-table {
@@ -163,10 +153,6 @@
       padding: 12px 16px;
       border-bottom: 1px solid var(--border);
       font-size: 15px;
-    }
-
-    .data-table tr:last-child td {
-      border-bottom: none;
     }
 
     .data-table td.field-title {
@@ -194,15 +180,10 @@
       font-weight: 700;
       box-sizing: border-box;
       box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
-      transition: background 0.2s, transform 0.1s;
     }
 
     .btn-download:hover {
       background: #047857;
-    }
-
-    .btn-download:active {
-      transform: scale(0.99);
     }
   </style>
 </head>
@@ -223,7 +204,7 @@
         </div>
       </div>
 
-      <div id="loader" class="loader">جاري جلب البيانات والتحقق من الاستدعاء...</div>
+      <div id="loader" class="loader">جاري جلب البيانات وتوليد الاستدعاء بصيغة PDF...</div>
       <div id="alertBox"></div>
 
       <div id="resultCard">
@@ -245,6 +226,10 @@
             <td class="field-val" id="outTargetRank"></td>
           </tr>
           <tr>
+            <td class="field-title">المؤسسة / المدرسة الأصلية</td>
+            <td class="field-val" id="outTargetSchool"></td>
+          </tr>
+          <tr>
             <td class="field-title">مؤسسة / مركز التكوين</td>
             <td class="field-val" id="outCenter"></td>
           </tr>
@@ -260,7 +245,7 @@
 
         <div id="downloadWrapper" style="display: none;">
           <a href="#" id="downloadBtn" class="btn-download" target="_blank" rel="noopener noreferrer">
-            📥 تحميل الاستدعاء بصيغة PDF
+            📥 تحميل الاستدعاء المولد بصيغة PDF
           </a>
         </div>
       </div>
@@ -268,10 +253,7 @@
   </div>
 
   <script>
-    // ==============================================================
-    // ضع رابط تطبيق الويب (Web App URL) الخاص بك هنا:
-    // ==============================================================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkZXr3Bmg0Nj-NK0kfvdDN_XlPBNQpdUcK39WI7WC7bHfPU8ZGM1GBwka1Y7sw5l-i/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPsvPkoWsqHlKWOZ1SrTtW2Ub0-DdZfszfk9TzDWYYMFwjl0c58BtZWqn2jjHIcKLs/exec";
 
     function handleEnter(e) {
       if (e.key === 'Enter') executeSearch();
@@ -310,6 +292,7 @@
           document.getElementById('outBirthDate').textContent = res.data.birthDate || "—";
           document.getElementById('outCurrentRank').textContent = res.data.currentRank || "—";
           document.getElementById('outTargetRank').textContent = res.data.targetRank || "—";
+          document.getElementById('outTargetSchool').textContent = res.data.targetSchool || "—";
           document.getElementById('outCenter').textContent = res.data.trainingCenter || "—";
           document.getElementById('outStartDate').textContent = res.data.startDate || "—";
 
@@ -326,7 +309,6 @@
             dlWrapper.style.display = 'block';
           } else {
             dlWrapper.style.display = 'none';
-            if (res.message) displayAlert(res.message, "warn");
           }
 
           resultCard.style.display = 'block';
